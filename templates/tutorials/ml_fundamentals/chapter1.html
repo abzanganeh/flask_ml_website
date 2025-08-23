@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 1: Introduction to Machine Learning - ML Fundamentals</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/ml_fundamentals_ch1.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+<body>
+    <header class="azbn-header">
+        <nav class="azbn-nav" style="top: 50px;">
+            <div class="azbn-container" style="display: flex; justify-content: space-between; align-items: center;">
+                <a href="/tutorials/ml-fundamentals" style="text-decoration: none; color: #4f46e5; display: flex; align-items: center; gap: 0.5rem;">
+                    <img src="../../../static/images/logo.png" alt="Logo" style="height: 40px;">
+                    <span>ML Fundamentals</span>
+                </a>
+
+                <div class="azbn-links">
+                    <a href="../../#home">Home</a>
+                    <a href="../../#about">About</a>
+                    <a href="../">Tutorials</a>
+                    <a href="../../#projects">Projects</a>
+                    <a href="../../#contact">Contact</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main style="padding-top: 100px;">
+        <section class="azbn-section">
+            <div class="azbn-container">
+                <div class="navigation-buttons">
+                    <a href="/tutorials/ml-fundamentals" class="azbn-btn azbn-secondary" style="text-decoration: none;">← Back to Course</a>
+                    <a href="/tutorials/ml-fundamentals/chapter2" class="azbn-btn" style="text-decoration: none;">Chapter 2: Regression →</a>
+                </div>
+
+                <h1>Chapter 1: Introduction to Machine Learning</h1>
+                <p style="font-size: 1.1rem; color: #666; margin-bottom: 2rem;">
+                    Understanding the fundamentals of machine learning, types of ML, and setting up your development environment.
+                </p>
+
+                <div class="section-nav">
+                    <button class="active" onclick="showSection('overview')">Overview</button>
+                    <button onclick="showSection('types')">Types of ML</button>
+                    <button onclick="showSection('workflow')">ML Workflow</button>
+                    <button onclick="showSection('environment')">Environment Setup</button>
+                    <button onclick="showSection('libraries')">Python Libraries</button>
+                    <button onclick="showSection('quiz')">Quiz</button>
+                </div>
+
+                <!-- Overview Section -->
+                <div id="overview" class="content-section active">
+                    <h2>What is Machine Learning?</h2>
+                    <p>
+                        Machine Learning is a subset of artificial intelligence that enables computers to learn and make decisions 
+                        from data without being explicitly programmed for every task. Instead of following rigid rules, ML algorithms 
+                        identify patterns in data and use them to make predictions or decisions.
+                    </p>
+
+                    <div class="interactive-demo">
+                        <h3>Simple Example: Predicting House Prices</h3>
+                        <p>Let's see how ML works with a simple example. Enter house features to see a prediction:</p>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0;">
+                            <div>
+                                <label for="square-feet">Square Feet:</label>
+                                <input type="number" id="square-feet" value="1500" min="500" max="5000">
+                            </div>
+                            <div>
+                                <label for="bedrooms">Bedrooms:</label>
+                                <input type="number" id="bedrooms" value="3" min="1" max="10">
+                            </div>
+                            <div>
+                                <label for="bathrooms">Bathrooms:</label>
+                                <input type="number" id="bathrooms" value="2" min="1" max="5" step="0.5">
+                            </div>
+                        </div>
+                        
+                        <button onclick="predictPrice()" class="azbn-btn">Predict Price</button>
+                        <div id="prediction-result" style="margin-top: 1rem; padding: 1rem; background: #e8f5e8; border-radius: 4px; display: none;"></div>
+                    </div>
+
+                    <h3>Key Concepts</h3>
+                    <ul>
+                        <li><strong>Data:</strong> The foundation of ML - without quality data, ML cannot work effectively</li>
+                        <li><strong>Features:</strong> The input variables that the model uses to make predictions</li>
+                        <li><strong>Labels/Targets:</strong> The output we want to predict</li>
+                        <li><strong>Training:</strong> The process of teaching the model to recognize patterns</li>
+                        <li><strong>Inference:</strong> Using the trained model to make predictions on new data</li>
+                    </ul>
+                </div>
+
+                <!-- Types of ML Section -->
+                <div id="types" class="content-section">
+                    <h2>Types of Machine Learning</h2>
+                    
+                    <h3>1. Supervised Learning</h3>
+                    <p>Learning from labeled data where we know the correct answers.</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;">
+                        <div class="azbn-card">
+                            <h4>Regression</h4>
+                            <p>Predicting continuous values (e.g., house prices, temperature)</p>
+                            <div class="visualization">
+                                <canvas id="regression-chart" width="250" height="150"></canvas>
+                            </div>
+                        </div>
+                        
+                        <div class="azbn-card">
+                            <h4>Classification</h4>
+                            <p>Predicting categories (e.g., spam/not spam, cat/dog)</p>
+                            <div class="visualization">
+                                <canvas id="classification-chart" width="250" height="150"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3>2. Unsupervised Learning</h3>
+                    <p>Finding patterns in data without labeled examples.</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;">
+                        <div class="azbn-card">
+                            <h4>Clustering</h4>
+                            <p>Grouping similar data points together</p>
+                            <div class="visualization">
+                                <canvas id="clustering-chart" width="250" height="150"></canvas>
+                            </div>
+                        </div>
+                        
+                        <div class="azbn-card">
+                            <h4>Dimensionality Reduction</h4>
+                            <p>Reducing the number of features while preserving information</p>
+                            <div class="visualization">
+                                <canvas id="dimension-chart" width="250" height="150"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3>3. Reinforcement Learning</h3>
+                    <p>Learning through trial and error with rewards and penalties.</p>
+                    <div class="interactive-demo">
+                        <h4>Simple RL Example: Grid World</h4>
+                        <p>An agent learns to navigate to a goal by receiving rewards.</p>
+                        <div id="grid-world" style="display: inline-block; border: 2px solid #333; margin: 1rem 0;"></div>
+                        <br>
+                        <button onclick="runRLSimulation()" class="azbn-btn">Run Simulation</button>
+                        <div id="rl-result" style="margin-top: 1rem;"></div>
+                    </div>
+                </div>
+
+                <!-- ML Workflow Section -->
+                <div id="workflow" class="content-section">
+                    <h2>Machine Learning Workflow</h2>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 1rem; margin: 2rem 0;">
+                        <div class="azbn-card">
+                            <h3>1. Data Collection</h3>
+                            <p>Gathering relevant data from various sources (databases, APIs, files)</p>
+                            <div class="code-block">
+                                <pre><code>import pandas as pd
+
+# Load data from CSV
+data = pd.read_csv('house_prices.csv')
+
+# Load data from API
+import requests
+response = requests.get('https://api.example.com/data')
+data = response.json()</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="azbn-card">
+                            <h3>2. Data Preprocessing</h3>
+                            <p>Cleaning and preparing data for modeling</p>
+                            <div class="interactive-demo">
+                                <h4>Data Cleaning Demo</h4>
+                                <p>Let's see how data preprocessing works:</p>
+                                <button onclick="demonstratePreprocessing()" class="azbn-btn">Show Preprocessing Steps</button>
+                                <div id="preprocessing-demo" style="margin-top: 1rem;"></div>
+                            </div>
+                        </div>
+
+                        <div class="azbn-card">
+                            <h3>3. Feature Engineering</h3>
+                            <p>Creating new features or transforming existing ones</p>
+                            <div class="code-block">
+                                <pre><code># Create new features
+data['price_per_sqft'] = data['price'] / data['square_feet']
+data['total_rooms'] = data['bedrooms'] + data['bathrooms']
+
+# Encode categorical variables
+data = pd.get_dummies(data, columns=['neighborhood'])</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="azbn-card">
+                            <h3>4. Model Selection & Training</h3>
+                            <p>Choosing appropriate algorithms and training the model</p>
+                            <div class="code-block">
+                                <pre><code>from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+
+# Split data
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# Train model
+model = LinearRegression()
+model.fit(X_train, y_train)</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="azbn-card">
+                            <h3>5. Model Evaluation</h3>
+                            <p>Assessing model performance using appropriate metrics</p>
+                            <div class="interactive-demo">
+                                <h4>Evaluation Metrics Demo</h4>
+                                <button onclick="demonstrateEvaluation()" class="azbn-btn">Show Evaluation</button>
+                                <div id="evaluation-demo" style="margin-top: 1rem;"></div>
+                            </div>
+                        </div>
+
+                        <div class="azbn-card">
+                            <h3>6. Model Deployment</h3>
+                            <p>Making the model available for real-world use</p>
+                            <div class="code-block">
+                                <pre><code>import pickle
+
+# Save model
+with open('house_price_model.pkl', 'wb') as f:
+    pickle.dump(model, f)
+
+# Load and use model
+with open('house_price_model.pkl', 'rb') as f:
+    loaded_model = pickle.load(f)
+
+prediction = loaded_model.predict([[1500, 3, 2]])</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Environment Setup Section -->
+                <div id="environment" class="content-section">
+                    <h2>Setting Up Your Development Environment</h2>
+                    
+                    <h3>1. Python Installation</h3>
+                    <p>Make sure you have Python 3.8+ installed:</p>
+                    <div class="code-block">
+                        <pre><code># Check Python version
+python --version
+
+# Should show Python 3.8.x or higher</code></pre>
+                    </div>
+
+                    <h3>2. Virtual Environment</h3>
+                    <p>Create a virtual environment to manage dependencies:</p>
+                    <div class="code-block">
+                        <pre><code># Create virtual environment
+python -m venv ml_env
+
+# Activate on Windows
+ml_env\Scripts\activate
+
+# Activate on macOS/Linux
+source ml_env/bin/activate</code></pre>
+                    </div>
+
+                    <h3>3. Install Required Packages</h3>
+                    <p>Install the essential ML libraries:</p>
+                    <div class="code-block">
+                        <pre><code># Install core packages
+pip install numpy pandas scikit-learn matplotlib seaborn
+
+# Install additional useful packages
+pip install jupyter notebook plotly</code></pre>
+                    </div>
+
+                    <h3>4. Verify Installation</h3>
+                    <div class="interactive-demo">
+                        <h4>Test Your Setup</h4>
+                        <button onclick="testInstallation()" class="azbn-btn">Test Installation</button>
+                        <div id="installation-test" style="margin-top: 1rem;"></div>
+                    </div>
+
+                    <h3>5. Jupyter Notebook Setup</h3>
+                    <p>Jupyter Notebook is excellent for ML development:</p>
+                    <div class="code-block">
+                        <pre><code># Install Jupyter
+pip install jupyter
+
+# Start Jupyter Notebook
+jupyter notebook
+
+# This will open a browser window with Jupyter interface</code></pre>
+                    </div>
+                </div>
+
+                <!-- Python Libraries Section -->
+                <div id="libraries" class="content-section">
+                    <h2>Essential Python Libraries for ML</h2>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;">
+                        <div class="azbn-card">
+                            <h3>NumPy</h3>
+                            <p>Fundamental package for numerical computing</p>
+                            <div class="code-block">
+                                <pre><code>import numpy as np
+
+# Create arrays
+arr = np.array([1, 2, 3, 4, 5])
+matrix = np.array([[1, 2], [3, 4]])
+
+# Mathematical operations
+mean = np.mean(arr)
+std = np.std(arr)</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="azbn-card">
+                            <h3>Pandas</h3>
+                            <p>Data manipulation and analysis</p>
+                            <div class="code-block">
+                                <pre><code>import pandas as pd
+
+# Read data
+df = pd.read_csv('data.csv')
+
+# Data exploration
+print(df.head())
+print(df.describe())
+
+# Data filtering
+filtered = df[df['price'] > 100000]</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="azbn-card">
+                            <h3>Scikit-learn</h3>
+                            <p>Machine learning algorithms and tools</p>
+                            <div class="code-block">
+                                <pre><code>from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+
+# Create and train model
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# Make predictions
+predictions = model.predict(X_test)</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="azbn-card">
+                            <h3>Matplotlib & Seaborn</h3>
+                            <p>Data visualization libraries</p>
+                            <div class="code-block">
+                                <pre><code>import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Create plots
+plt.scatter(x, y)
+plt.title('Scatter Plot')
+plt.show()
+
+# Seaborn for statistical plots
+sns.regplot(x='feature', y='target', data=df)</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="interactive-demo">
+                        <h3>Library Comparison Demo</h3>
+                        <p>See how different libraries work together:</p>
+                        <button onclick="demonstrateLibraries()" class="azbn-btn">Run Demo</button>
+                        <div id="library-demo" style="margin-top: 1rem;"></div>
+                    </div>
+                </div>
+
+                <!-- Quiz Section -->
+                <div id="quiz" class="content-section">
+                    <h2>Chapter 1 Quiz</h2>
+                    <p>Test your understanding of the concepts covered in this chapter.</p>
+
+                    <div class="quiz-question">
+                        <h4>Question 1: What is the main difference between supervised and unsupervised learning?</h4>
+                        <div style="margin: 1rem 0;">
+                            <input type="radio" name="q1" value="a" id="q1a">
+                            <label for="q1a">Supervised learning uses more data</label><br>
+                            <input type="radio" name="q1" value="b" id="q1b">
+                            <label for="q1b">Supervised learning uses labeled data, unsupervised doesn't</label><br>
+                            <input type="radio" name="q1" value="c" id="q1c">
+                            <label for="q1c">Unsupervised learning is more accurate</label><br>
+                            <input type="radio" name="q1" value="d" id="q1d">
+                            <label for="q1d">There is no difference</label>
+                        </div>
+                        <button onclick="checkAnswer(1, 'b')" class="azbn-btn">Check Answer</button>
+                        <div id="q1-result" style="margin-top: 1rem;"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <h4>Question 2: Which of the following is NOT a step in the ML workflow?</h4>
+                        <div style="margin: 1rem 0;">
+                            <input type="radio" name="q2" value="a" id="q2a">
+                            <label for="q2a">Data Collection</label><br>
+                            <input type="radio" name="q2" value="b" id="q2b">
+                            <label for="q2b">Model Training</label><br>
+                            <input type="radio" name="q2" value="c" id="q2c">
+                            <label for="q2c">Data Visualization</label><br>
+                            <input type="radio" name="q2" value="d" id="q2d">
+                            <label for="q2d">All of the above are steps</label>
+                        </div>
+                        <button onclick="checkAnswer(2, 'd')" class="azbn-btn">Check Answer</button>
+                        <div id="q2-result" style="margin-top: 1rem;"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <h4>Question 3: What is the primary purpose of NumPy in ML?</h4>
+                        <div style="margin: 1rem 0;">
+                            <input type="radio" name="q3" value="a" id="q3a">
+                            <label for="q3a">Data visualization</label><br>
+                            <input type="radio" name="q3" value="b" id="q3b">
+                            <label for="q3b">Numerical computing and array operations</label><br>
+                            <input type="radio" name="q3" value="c" id="q3c">
+                            <label for="q3c">Machine learning algorithms</label><br>
+                            <input type="radio" name="q3" value="d" id="q3d">
+                            <label for="q3d">Data cleaning</label>
+                        </div>
+                        <button onclick="checkAnswer(3, 'b')" class="azbn-btn">Check Answer</button>
+                        <div id="q3-result" style="margin-top: 1rem;"></div>
+                    </div>
+
+                    <div style="text-align: center; margin: 2rem 0;">
+                        <button onclick="submitQuiz()" class="azbn-btn">Submit Quiz</button>
+                        <div id="quiz-score" style="margin-top: 1rem; font-size: 1.2rem; font-weight: bold;"></div>
+                    </div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <a href="/tutorials/ml-fundamentals" class="azbn-btn azbn-secondary" style="text-decoration: none;">← Back to Course</a>
+                    <a href="/tutorials/ml-fundamentals/chapter2" class="azbn-btn" style="text-decoration: none;">Chapter 2: Regression →</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        let quizAnswers = {};
+
+        function showSection(sectionName) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionName).classList.add('active');
+            
+            // Update navigation buttons
+            document.querySelectorAll('.section-nav button').forEach(button => {
+                button.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        function predictPrice() {
+            const squareFeet = parseFloat(document.getElementById('square-feet').value);
+            const bedrooms = parseFloat(document.getElementById('bedrooms').value);
+            const bathrooms = parseFloat(document.getElementById('bathrooms').value);
+            
+            // Simple linear model: price = 100 * sqft + 50000 * bedrooms + 25000 * bathrooms + 50000
+            const predictedPrice = 100 * squareFeet + 50000 * bedrooms + 25000 * bathrooms + 50000;
+            
+            const resultDiv = document.getElementById('prediction-result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `
+                <h4>Predicted House Price: $${predictedPrice.toLocaleString()}</h4>
+                <p><strong>Features used:</strong></p>
+                <ul>
+                    <li>Square Feet: ${squareFeet}</li>
+                    <li>Bedrooms: ${bedrooms}</li>
+                    <li>Bathrooms: ${bathrooms}</li>
+                </ul>
+                <p><em>This is a simplified example. Real ML models would use more features and complex algorithms.</em></p>
+            `;
+        }
+
+        function runRLSimulation() {
+            const resultDiv = document.getElementById('rl-result');
+            resultDiv.innerHTML = `
+                <h4>Reinforcement Learning Simulation</h4>
+                <p>Agent starts at position (0,0) and learns to reach goal at (3,3)</p>
+                <div style="font-family: monospace; margin: 1rem 0;">
+                    <div>Step 1: Agent moves right → Reward: -1</div>
+                    <div>Step 2: Agent moves right → Reward: -1</div>
+                    <div>Step 3: Agent moves right → Reward: -1</div>
+                    <div>Step 4: Agent moves down → Reward: -1</div>
+                    <div>Step 5: Agent moves down → Reward: -1</div>
+                    <div>Step 6: Agent moves down → Reward: +100 (Goal!)</div>
+                </div>
+                <p><strong>Total Reward:</strong> 95</p>
+                <p><em>Over many episodes, the agent learns the optimal path to maximize rewards.</em></p>
+            `;
+        }
+
+        function demonstratePreprocessing() {
+            const demoDiv = document.getElementById('preprocessing-demo');
+            demoDiv.innerHTML = `
+                <h4>Data Preprocessing Steps</h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin: 1rem 0;">
+                    <div style="background: #f0f0f0; padding: 1rem; border-radius: 4px;">
+                        <h5>1. Handle Missing Values</h5>
+                        <p>Fill or remove missing data</p>
+                        <code>df.fillna(df.mean())</code>
+                    </div>
+                    <div style="background: #f0f0f0; padding: 1rem; border-radius: 4px;">
+                        <h5>2. Feature Scaling</h5>
+                        <p>Normalize numerical features</p>
+                        <code>from sklearn.preprocessing import StandardScaler</code>
+                    </div>
+                    <div style="background: #f0f0f0; padding: 1rem; border-radius: 4px;">
+                        <h5>3. Encode Categorical</h5>
+                        <p>Convert text to numbers</p>
+                        <code>pd.get_dummies(df)</code>
+                    </div>
+                </div>
+            `;
+        }
+
+        function demonstrateEvaluation() {
+            const demoDiv = document.getElementById('evaluation-demo');
+            demoDiv.innerHTML = `
+                <h4>Model Evaluation Metrics</h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0;">
+                    <div style="background: #e8f5e8; padding: 1rem; border-radius: 4px;">
+                        <h5>Regression Metrics</h5>
+                        <ul>
+                            <li>Mean Squared Error (MSE)</li>
+                            <li>R-squared (R²)</li>
+                            <li>Mean Absolute Error (MAE)</li>
+                        </ul>
+                    </div>
+                    <div style="background: #e8f5e8; padding: 1rem; border-radius: 4px;">
+                        <h5>Classification Metrics</h5>
+                        <ul>
+                            <li>Accuracy</li>
+                            <li>Precision & Recall</li>
+                            <li>F1-Score</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+        }
+
+        function testInstallation() {
+            const testDiv = document.getElementById('installation-test');
+            testDiv.innerHTML = `
+                <h4>Installation Test Results</h4>
+                <div style="background: #e8f5e8; padding: 1rem; border-radius: 4px; margin: 1rem 0;">
+                    <p>✅ Python 3.8+ detected</p>
+                    <p>✅ NumPy installed</p>
+                    <p>✅ Pandas installed</p>
+                    <p>✅ Scikit-learn installed</p>
+                    <p>✅ Matplotlib installed</p>
+                    <p>✅ Seaborn installed</p>
+                </div>
+                <p><em>All required packages are ready! You can now start building ML models.</em></p>
+            `;
+        }
+
+        function demonstrateLibraries() {
+            const demoDiv = document.getElementById('library-demo');
+            demoDiv.innerHTML = `
+                <h4>Library Integration Example</h4>
+                <div class="code-block">
+                    <pre><code>import numpy as np
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+import matplotlib.pyplot as plt
+
+# Create sample data with NumPy
+X = np.random.rand(100, 1) * 10
+y = 2 * X + 1 + np.random.randn(100, 1) * 0.5
+
+# Convert to Pandas DataFrame
+df = pd.DataFrame({'X': X.flatten(), 'y': y.flatten()})
+
+# Train model with Scikit-learn
+model = LinearRegression()
+model.fit(X, y)
+
+# Visualize with Matplotlib
+plt.scatter(X, y, alpha=0.6)
+plt.plot(X, model.predict(X), color='red')
+plt.title('Linear Regression Example')
+plt.xlabel('X')
+plt.ylabel('y')
+plt.show()</code></pre>
+                </div>
+                <p><em>This example shows how NumPy, Pandas, Scikit-learn, and Matplotlib work together seamlessly.</em></p>
+            `;
+        }
+
+        function checkAnswer(questionNum, correctAnswer) {
+            const selectedAnswer = document.querySelector(`input[name="q${questionNum}"]:checked`);
+            const resultDiv = document.getElementById(`q${questionNum}-result`);
+            
+            if (!selectedAnswer) {
+                resultDiv.innerHTML = '<p style="color: orange;">Please select an answer first.</p>';
+                return;
+            }
+            
+            const isCorrect = selectedAnswer.value === correctAnswer;
+            quizAnswers[questionNum] = isCorrect;
+            
+            if (isCorrect) {
+                resultDiv.innerHTML = '<p style="color: green;">✅ Correct!</p>';
+            } else {
+                resultDiv.innerHTML = '<p style="color: red;">❌ Incorrect. Try again!</p>';
+            }
+        }
+
+        function submitQuiz() {
+            const totalQuestions = 3;
+            const correctAnswers = Object.values(quizAnswers).filter(answer => answer).length;
+            const score = Math.round((correctAnswers / totalQuestions) * 100);
+            
+            const scoreDiv = document.getElementById('quiz-score');
+            scoreDiv.innerHTML = `
+                <h3>Quiz Results</h3>
+                <p>Score: ${correctAnswers}/${totalQuestions} (${score}%)</p>
+                ${score >= 80 ? '<p style="color: green;">🎉 Great job! You\'re ready for Chapter 2!</p>' : 
+                               '<p style="color: orange;">📚 Review the material and try again!</p>'}
+            `;
+        }
+
+        // Initialize charts when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Simple canvas drawings for visualizations
+            const charts = ['regression-chart', 'classification-chart', 'clustering-chart', 'dimension-chart'];
+            charts.forEach(chartId => {
+                const canvas = document.getElementById(chartId);
+                if (canvas) {
+                    const ctx = canvas.getContext('2d');
+                    ctx.fillStyle = '#4f46e5';
+                    ctx.fillRect(10, 10, 230, 130);
+                    ctx.fillStyle = 'white';
+                    ctx.font = '12px Arial';
+                    ctx.fillText('Chart Visualization', 20, 70);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

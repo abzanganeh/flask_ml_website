@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+
+{% block title %}Contact - {{ site_title }}{% endblock %}
+
+{% block content %}
+<section class="contact-page">
+    <div class="container">
+        <div class="section-header">
+            <h1 class="section-title">Get In Touch</h1>
+            <p class="section-subtitle">
+                Let's discuss opportunities, projects, or collaborations
+            </p>
+        </div>
+        
+        <div class="contact-content">
+            <div class="contact-form-section">
+                <h2>Send a Message</h2>
+                <form method="POST" class="contact-form">
+                    <div class="form-group">
+                        <label for="name">Name *</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email *</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <input type="text" id="subject" name="subject">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Message *</label>
+                        <textarea id="message" name="message" rows="5" required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i> Send Message
+                    </button>
+                </form>
+            </div>
+            
+            <div class="contact-info-section">
+                <h2>Contact Information</h2>
+                
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h3>Email</h3>
+                            <p><a href="mailto:{{ social_links.email }}">{{ social_links.email }}</a></p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <i class="fab fa-linkedin"></i>
+                        <div>
+                            <h3>LinkedIn</h3>
+                            <p><a href="{{ social_links.linkedin }}" target="_blank">Connect with me</a></p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <i class="fab fa-github"></i>
+                        <div>
+                            <h3>GitHub</h3>
+                            <p><a href="{{ social_links.github }}" target="_blank">View my code</a></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="availability">
+                    <h3>Availability</h3>
+                    <p>I'm currently open to new opportunities and collaborations. Feel free to reach out for:</p>
+                    <ul>
+                        <li>AI/ML consulting projects</li>
+                        <li>Data science collaborations</li>
+                        <li>Speaking engagements</li>
+                        <li>Open source contributions</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.contact-page {
+    padding: var(--space-3xl) 0;
+}
+
+.contact-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3xl);
+    margin-top: var(--space-2xl);
+}
+
+.contact-form {
+    background: var(--bg-card);
+    padding: var(--space-2xl);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.form-group {
+    margin-bottom: var(--space-lg);
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: var(--space-sm);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: var(--space-md);
+    border: 2px solid var(--border-light);
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    transition: border-color var(--transition-fast);
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.contact-info-section {
+    background: var(--bg-secondary);
+    padding: var(--space-2xl);
+    border-radius: var(--radius-lg);
+}
+
+.contact-info {
+    margin-bottom: var(--space-2xl);
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-lg);
+    margin-bottom: var(--space-xl);
+}
+
+.contact-item i {
+    font-size: 2rem;
+    color: var(--primary-color);
+    width: 50px;
+    text-align: center;
+}
+
+.contact-item h3 {
+    margin: 0 0 var(--space-xs) 0;
+    color: var(--text-primary);
+}
+
+.contact-item a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.contact-item a:hover {
+    text-decoration: underline;
+}
+
+.availability {
+    background: var(--bg-card);
+    padding: var(--space-lg);
+    border-radius: var(--radius-md);
+}
+
+.availability h3 {
+    margin-bottom: var(--space-md);
+    color: var(--primary-color);
+}
+
+@media (max-width: 768px) {
+    .contact-content {
+        grid-template-columns: 1fr;
+        gap: var(--space-2xl);
+    }
+    
+    .contact-form,
+    .contact-info-section {
+        padding: var(--space-lg);
+    }
+}
+</style>
+{% endblock %}

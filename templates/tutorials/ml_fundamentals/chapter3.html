@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 3: Classification Algorithms - Ali Zanganeh</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/ml_fundamentals_ch3.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <a id="top"></a>
+    <header class="azbn-header">
+        <div class="azbn-container">
+            <h1><a href="../../" style="text-decoration: none; color: #4f46e5;">Ali Zanganeh</a></h1>
+            <nav>
+                <a href="../../#home">Home</a>
+                <a href="../">Tutorials</a>
+                <a href="./chapter2.html">← Chapter 2</a>
+                <a href="../../tutorials/neural-networks/">Neural Networks →</a>
+            </nav>
+        </div>
+    </header>
+
+    <main style="padding-top: 100px;">
+        <section class="azbn-section">
+            <div class="azbn-container">
+                <h1>Chapter 3: Classification Algorithms Mastery</h1>
+                <p class="azbn-subtitle">From logistic regression to support vector machines with mathematical
+                    foundations and real-world applications</p>
+
+                <div class="azbn-card learning-objectives-card">
+                    <h2> Learning Objectives</h2>
+                    <ul>
+                        <li>Master logistic regression theory and sigmoid function mathematics</li>
+                        <li>Understand Support Vector Machines and kernel methods</li>
+                        <li>Learn comprehensive model evaluation (accuracy, precision, recall, F1, ROC-AUC)</li>
+                        <li>Apply hyperparameter tuning with GridSearchCV and cross-validation</li>
+                        <li>Handle multi-class classification strategies</li>
+                        <li>Recognize and address class imbalance problems</li>
+                    </ul>
+                </div>
+
+                <h2> What is Classification?</h2>
+                <div class="azbn-card">
+                    <h3>From Continuous to Discrete Predictions</h3>
+                    <p><strong>Classification</strong> is a supervised learning task where we predict discrete
+                        categories or classes rather than continuous values. Unlike regression, the output is
+                        categorical.</p>
+
+                    <div class="classification-problem">
+                        <h4> The Classification Problem:</h4>
+                        <div class="classification-formula">
+                            <strong>y ∈ {C₁, C₂, ..., Cₖ}</strong>
+                        </div>
+                        <ul>
+                            <li><strong>y:</strong> Target class (what we want to predict)</li>
+                            <li><strong>Cₖ:</strong> Possible classes (finite, discrete set)</li>
+                            <li><strong>X:</strong> Input features (same as regression)</li>
+                            <li><strong>Goal:</strong> Learn P(y|X) - probability of class given features</li>
+                        </ul>
+                    </div>
+
+                    <h4> Types of Classification Problems:</h4>
+                    <div class="azbn-grid classification-types-grid">
+                        <div class="classification-type-card binary-classification">
+                            <h5>🔵 Binary Classification</h5>
+                            <p><strong>Classes:</strong> 2 (Yes/No, True/False)</p>
+                            <p><strong>Examples:</strong></p>
+                            <ul>
+                                <li>Email: Spam vs Ham</li>
+                                <li>Medical: Disease vs Healthy</li>
+                                <li>Finance: Fraud vs Legitimate</li>
+                                <li>Marketing: Buy vs Don't Buy</li>
+                            </ul>
+                        </div>
+                        <div class="classification-type-card multi-class-classification">
+                            <h5>🟢 Multi-class Classification</h5>
+                            <p><strong>Classes:</strong> 3+ (mutually exclusive)</p>
+                            <p><strong>Examples:</strong></p>
+                            <ul>
+                                <li>Image: Cat, Dog, Bird, Fish</li>
+                                <li>Text: Sports, Politics, Entertainment</li>
+                                <li>Iris: Setosa, Versicolor, Virginica</li>
+                                <li>Grade: A, B, C, D, F</li>
+                            </ul>
+                        </div>
+                        <div class="classification-type-card multi-label-classification">
+                            <h5>🟡 Multi-label Classification</h5>
+                            <p><strong>Classes:</strong> Multiple labels per sample</p>
+                            <p><strong>Examples:</strong></p>
+                            <ul>
+                                <li>Movie genres: Action + Comedy</li>
+                                <li>Article tags: Tech + AI + Python</li>
+                                <li>Image tags: Person + Car + Road</li>
+                                <li>Skills: Python + ML + Statistics</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <h2> Logistic Regression: The Classification Foundation</h2>
+                <div class="azbn-card">
+                    <h3>From Linear to Probabilistic</h3>
+
+                    <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 10px; margin: 1rem 0;">
+                        <h4> Why Not Linear Regression for Classification?</h4>
+                        <div style="background: #ffebee; padding: 1rem; border-radius: 6px; margin: 1rem 0;">
+                            <h5>❌ Problems with Linear Regression:</h5>
+                            <ul>
+                                <li>Predictions can be <0 or>1 (impossible probabilities)</li>
+                                <li>Assumes linear relationship between X and y</li>
+                                <li>Equal intervals assumption doesn't make sense for categories</li>
+                                <li>Sensitive to outliers in classification context</li>
+                            </ul>
+                        </div>
+
+                        <div style="background: #e8f5e8; padding: 1rem; border-radius: 6px; margin: 1rem 0;">
+                            <h5>✅ Logistic Regression Solution:</h5>
+                            <ul>
+                                <li>Outputs probabilities between 0 and 1</li>
+                                <li>Uses sigmoid function to "squash" linear output</li>
+                                <li>Models log-odds (logit) as linear function</li>
+                                <li>More robust to outliers</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h4> The Sigmoid Function: Heart of Logistic Regression</h4>
+                    <div style="background: #e3f2fd; padding: 1.5rem; border-radius: 10px; margin: 1rem 0;">
+                        <div style="background: white; padding: 1rem; border-radius: 6px; margin: 1rem 0;">
+                            <h5>📐 Sigmoid Formula:</h5>
+                            <div style="text-align: center; font-size: 1.3rem; margin: 1rem 0;">
+                                <strong>σ(z) = 1 / (1 + e^(-z))</strong>
+                            </div>
+                            <p style="text-align: center;">Where z = β₀ + β₁x₁ + β₂x₂ + ... + βₚxₚ</p>
+                        </div>
+
+                        <h5> Sigmoid Properties:</h5>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0;">
+                            <div style="background: #f8f9fa; padding: 1rem; border-radius: 6px;">
+                                <h6> Mathematical Properties:</h6>
+                                <ul style="font-size: 0.9rem;">
+                                    <li>Range: (0, 1) - perfect for probabilities</li>
+                                    <li>S-shaped curve</li>
+                                    <li>Symmetric around z = 0</li>
+                                    <li>σ(0) = 0.5 (decision boundary)</li>
+                                    <li>σ(∞) = 1, σ(-∞) = 0</li>
+                                </ul>
+                            </div>
+                            <div style="background: #f8f9fa; padding: 1rem; border-radius: 6px;">
+                                <h6> Interpretations:</h6>
+                                <ul style="font-size: 0.9rem;">
+                                    <li>z > 0 → P(y=1) > 0.5</li>
+                                    <li>z < 0 → P(y=1) < 0.5</li>
+                                    <li>|z| large → More confident prediction</li>
+                                    <li>z ≈ 0 → Uncertain (near boundary)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div style="background: #fff3e0; padding: 1rem; border-radius: 6px; margin-top: 1rem;">
+                            <strong> Key Insight:</strong> The sigmoid transforms any real number into a probability,
+                            making it perfect for classification!
+                        </div>
+                    </div>
+
+                    <h4> Odds and Log-Odds (Logits)</h4>
+                    <div style="background: #f3e5f5; padding: 1.5rem; border-radius: 10px; margin: 1rem 0;">
+                        <h5> Understanding Odds:</h5>
+                        <div style="background: white; padding: 1rem; border-radius: 6px; margin: 1rem 0;">
+                            <p><strong>Probability:</strong> P(y=1) = p</p>
+                            <p><strong>Odds:</strong> Odds = p / (1-p)</p>
+                            <p><strong>Log-Odds (Logit):</strong> log(Odds) = log(p/(1-p))</p>
+                        </div>
+
+                        <h5> The Beautiful Connection:</h5>
+                        <div style="background: white; padding: 1rem; border-radius: 6px; margin: 1rem 0;">
+                            <div style="text-align: center; margin: 0.5rem 0;">
+                                <strong>log(p/(1-p)) = β₀ + β₁x₁ + ... + βₚxₚ</strong>
+                            </div>
+                            <p style="text-align: center; font-size: 0.9rem;">The log-odds is linear in the parameters!
+                            </p>
+                        </div>
+
+                        <h5> Interpretation Examples:</h5>
+                        <ul>
+                            <li><strong>p = 0.5:</strong> Odds = 1:1, Log-Odds = 0</li>
+                            <li><strong>p = 0.8:</strong> Odds = 4:1, Log-Odds = 1.39</li>
+                            <li><strong>p = 0.1:</strong> Odds = 1:9, Log-Odds = -2.20</li>
+                        </ul>
+
+                        <div style="background: #e3f2fd; padding: 1rem; border-radius: 6px; margin-top: 1rem;">
+                            <strong> Coefficient Interpretation:</strong> βⱼ represents the change in log-odds for a
+                            one-unit increase in xⱼ
+                        </div>
+                    </div>
+
+                    <h4> Maximum Likelihood Estimation</h4>
+                    <div style="background: #fff8e1; padding: 1.5rem; border-radius: 10px; margin: 1rem 0;">
+                        <h5> How Logistic Regression Learns:</h5>
+                        <p>Unlike linear regression (which uses least squares), logistic regression uses Maximum
+                            Likelihood Estimation (MLE).</p>
+
+                        <div style="background: white; padding: 1rem; border-radius: 6px; margin: 1rem 0;">
+                            <h6> Likelihood Function:</h6>
+                            <div style="text-align: center; margin: 0.5rem 0;">
+                                <strong>L(β) = ∏ᵢ pᵢ^yᵢ × (1-pᵢ)^(1-yᵢ)</strong>
+                            </div>
+                            <p style="font-size: 0.9rem; text-align: center;">Where pᵢ = σ(βᵀxᵢ)</p>
+                        </div>
+
+                        <h6> The Process:</h6>
+                        <ol>
+                            <li><strong>Log-Likelihood:</strong> Take log for easier computation</li>
+                            <li><strong>Optimization:</strong> Use gradient descent or Newton-Raphson</li>
+                            <li><strong>No Closed Form:</strong> Unlike linear regression, requires iterative methods
+                            </li>
+                            <li><strong>Convergence:</strong> Algorithm stops when improvement is minimal</li>
+                        </ol>
+
+                        <div style="background: #e8f5e8; padding: 1rem; border-radius: 6px; margin-top: 1rem;">
+                            <strong> Intuition:</strong> Find parameters that make the observed data most likely under
+                            our model!
+                        </div>
+                    </div>
+                </div>
+
+                <h2> Support Vector Machines: Maximum Margin Classification</h2>
+                <div class="azbn-card">
+                    <h3>Finding the Optimal Decision Boundary</h3>
+
+                    <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 10px; margin: 1rem 0;">
+                        <h4> The SVM Philosophy</h4>
+                        <p>SVMs find the decision boundary that maximizes the margin between classes. This leads to
+                            better generalization than just finding any boundary that separates the data.</p>
+
+                        <div style="background: #e3f2fd; padding: 1rem; border-radius: 6px; margin: 1rem 0;">
+                            <h5> Key Concepts:</h5>
+                            <ul>
+                                <li><strong>Hyperplane:</strong> Decision boundary (line in 2D, plane in 3D, etc.)</li>
+                                <li><strong>Margin:</strong> Distance from boundary to nearest data points</li>
+                                <li><strong>Support Vectors:</strong> Data points that define the margin</li>
+                                <li><strong>Maximum Margin:</strong> Choose boundary with largest possible margin</li>
+                            </ul>
+                        </div>
+
+                        <div style="background: white; padding: 1rem; border-radius: 6px; margin: 1rem 0;">
+                            <h5> Mathematical Formulation:</h5>
+                            <p><strong>Hyperplane equation:</strong> wᵀx + b = 0</p>
+                            <p><strong>Classification rule:</strong> sign(wᵀx + b)</p>
+                            <p><strong>Margin:</strong> 2/||w|| (geometric interpretation)</p>
+                            <div
+                                style="text-align: center; margin: 0.5rem 0; background: #f8f9fa; padding: 0.5rem; border-radius: 4px;">
+                                <strong>Maximize: 2/||w|| ⟺ Minimize: ½||w||²</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h4> Hard vs Soft Margin</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.5rem 0;">
+                        <div style="background: #e8f5e8; padding: 1rem; border-radius: 8px;">
+                            <h5> Hard Margin SVM</h5>
+                            <p><strong>Assumption:</strong> Data is linearly separable</p>
+                            <ul style="font-size: 0.9rem;">
+                                <li>No misclassification allowed</li>
+                                <li>All points must be on correct side</li>
+                                <li>Strict margin enforcement</li>
+                                <li>Can fail if data not separable</li>
+                            </ul>
+                            <div style="background: #f1f8e9; padding: 0.5rem; border-radius: 4px; margin-top: 0.5rem;">
+                                <strong>Use when:</strong> Clean, separable data
+                            </div>
+                        </div>
+
+                        <div style="background: #fff8e1; padding: 1rem; border-radius: 8px;">
+                            <h5> Soft Margin SVM</h5>
+                            <p><strong>Reality:</strong> Allow some misclassification</p>
+                            <ul style="font-size: 0.9rem;">
+                                <li>Introduces slack variables (ξᵢ)</li>
+                                <li>Penalty parameter C controls trade-off</li>
+                                <li>Balance between margin and errors</li>
+                                <li>More robust to outliers</li>
+                            </ul>
+                            <div style="background: #fef7e0; padding: 0.5rem; border-radius: 4px; margin-top: 0.5rem;">
+                                <strong>Use when:</strong> Real-world, noisy data
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="background: #f3e5f5; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                        <h4>⚖ The C Parameter Trade-off:</h4>
+                        <ul>
+                            <li><strong>Large C:</strong> Low tolerance for errors, may overfit</li>
+                            <li><strong>Small C:</strong> High tolerance for errors, may underfit</li>
+                            <li><strong>Optimal C:</strong> Found through cross-validation</li>
+                        </ul>
+                    </div>
+
+                    <h4> Kernel Methods: The Magic of Non-Linear Classification</h4>
+                    <div style="background: #e3f2fd; padding: 1.5rem; border-radius: 10px; margin: 1rem 0;">
+                        <h5> The Non-Linear Problem:</h5>
+                        <p>Real-world data is rarely linearly separable. Kernels allow SVMs to create non-linear
+                            decision boundaries without explicitly computing high-dimensional transformations.</p>
+
+                        <div style="background: white; padding: 1rem; border-radius: 6px; margin: 1rem 0;">
+                            <h6> The Kernel Trick:</h6>
+                            <p>Instead of explicitly mapping to higher dimensions, kernels compute similarity in the
+                                transformed space:</p>
+                            <div style="text-align: center; margin: 0.5rem 0;">
+                                <strong>K(xᵢ, xⱼ) = φ(xᵢ)ᵀ φ(xⱼ)</strong>
+                            </div>
+                            <p style="font-size: 0.9rem; text-align: center;">Compute dot product in feature space
+                                without explicit mapping!</p>
+                        </div>
+
+                        <h5> Common Kernel Functions:</h5>
+                        <div
+                            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin: 1rem 0;">
+                            <div style="background: #f8f9fa; padding: 1rem; border-radius: 6px;">
+                                <h6> Linear Kernel</h6>
+                                <div style="background: white; padding: 0.5rem; border-radius: 4px; margin: 0.3rem 0;">
+                                    <strong>K(x,z) = xᵀz</strong>
+                                </div>
+                                <p style="font-size: 0.9rem;"><strong>Use:</strong> High-dimensional data, text
+                                    classification</p>
+                            </div>
+
+                            <div style="background: #f8f9fa; padding: 1rem; border-radius: 6px;">
+                                <h6> RBF (Gaussian) Kernel</h6>
+                                <div style="background: white; padding: 0.5rem; border-radius: 4px; margin: 0.3rem 0;">
+                                    <strong>K(x,z) = exp(-γ||x-z||²)</strong>
+                                </div>
+                                <p style="font-size: 0.9rem;"><strong>Use:</strong> Most popular, handles complex
+                                    patterns</p>
+                            </div>
+
+                            <div style="background: #f8f9fa; padding: 1rem; border-radius: 6px;">
+                                <h6> Polynomial Kernel</h6>
+                                <div style="background: white; padding: 0.5rem; border-radius: 4px; margin: 0.3rem 0;">
+                                    <strong>K(x,z) = (γxᵀz + r)ᵈ</strong>
+                                </div>
+                                <p style="font-size: 0.9rem;"><strong>Use:</strong> Natural language processing, image
+                                    processing</p>
+                            </div>
+
+                            <div style="background: #f8f9fa; padding: 1rem; border-radius: 6px;">
+                                <h6> Sigmoid Kernel</h6>
+                                <div style="background: white; padding: 0.5rem; border-radius: 4px; margin: 0.3rem 0;">
+                                    <strong>K(x,z) = tanh(γxᵀz + r)</strong>
+                                </div>
+                                <p style="font-size: 0.9rem;"><strong>Use:</strong> Neural network-like behavior</p>
+                            </div>
+                        </div>
+
+                        <div style="background: #e8f5e8; padding: 1rem; border-radius: 6px; margin-top: 1rem;">
+                            <h6> Kernel Hyperparameters:</h6>
+                            <ul style="margin: 0.5rem 0; font-size: 0.9rem;">
+                                <li><strong>γ (gamma):</strong> Controls kernel bandwidth (higher γ = more complex
+                                    boundary)</li>
+                                <li><strong>d (degree):</strong> Polynomial degree (higher d = more complex)</li>
+                                <li><strong>r (coef0):</strong> Independent term in polynomial/sigmoid</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <h2> Multi-Class Classification Strategies</h2>
+                <div class="azbn-card">
+                    <h3>Extending Binary Classifiers</h3>
+
+                    <div style="background: #fff8e1; padding: 1.5rem; border-radius: 10px; margin: 1rem 0;">
+                        <h4> The Multi-Class Challenge</h4>
+                        <p>Many algorithms (like SVM) are naturally binary. To handle multiple classes, we need
+                            strategies to combine binary classifiers.</p>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0;">
+                            <div style="background: #e3f2fd; padding: 1rem; border-radius: 8px;">
+                                <h5>1️⃣ One-vs-Rest (OvR)</h5>
+                                <p><strong>Strategy:</strong> Train k binary classifiers (one per class)</p>
+                                <ul style="font-size: 0.9rem;">
+                                    <li>Class 1 vs {2,3,...,k}</li>
+                                    <li>Class 2 vs {1,3,...,k}</li>
+                                    <li>...</li>
+                                    <li>Choose class with highest confidence</li>
+                                </ul>
+                                <div
+                                    style="background: #f8f9fa; padding: 0.5rem; border-radius: 4px; margin-top: 0.5rem;">
+                                    <strong>Pros:</strong> Simple, efficient, interpretable
+                                </div>
+                            </div>
+
+                            <div style="background: #e8f5e8; padding: 1rem; border-radius: 8px;">
+                                <h5>2️⃣ One-vs-One (OvO)</h5>
+                                <p><strong>Strategy:</strong> Train k(k-1)/2 binary classifiers</p>
+                                <ul style="font-size: 0.9rem;">
+                                    <li>Class 1 vs Class 2</li>
+                                    <li>Class 1 vs Class 3</li>
+                                    <li>...</li>
+                                    <li>Majority voting for final prediction</li>
+                                </ul>
+                                <div
+                                    style="background: #f8f9fa; padding: 0.5rem; border-radius: 4px; margin-top: 0.5rem;">
+                                    <strong>Pros:</strong> More robust, smaller training sets per classifier
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: #f3e5f5; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                            <h5>3️⃣ Native Multi-Class</h5>
+                            <p>Some algorithms handle multi-class naturally:</p>
+                            <ul style="font-size: 0.9rem;">
+                                <li><strong>Logistic Regression:</strong> Multinomial/softmax extension</li>
+                                <li><strong>Decision Trees:</strong> Split on multiple classes directly</li>
+                                <li><strong>Random Forest:</strong> Inherits from decision trees</li>
+                                <li><strong>Neural Networks:</strong> Multiple output neurons</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <h2> Classification Evaluation Metrics: Beyond Accuracy</h2>
+                <div class="azbn-card">
+                    <h3>The Complete Evaluation Toolkit</h3>
+
+                    <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 10px; margin: 1rem 0;">
+                        <h4> The Confusion Matrix Foundation</h4>
+                        <p>All classification metrics derive from the confusion matrix - a table showing actual vs
+                            predicted classifications.</p>
+
+                        <div
+                            style="background: white; padding: 1.5rem; border-radius: 8px; margin: 1rem 0; text-align: center;">
+                            <h5> Binary Classification Confusion Matrix:</h5>
+                            <table style="margin: 1rem auto; border-collapse: collapse; border: 2px solid #333;">
+                                <tr style="background: #f0f0f0;">
+                                    <td rowspan="2" style="border: 1px solid #333; padding: 0.5rem; font-weight: bold;">
+                                    </td>
+                                    <td colspan="2" style="border: 1px solid #333; padding: 0.5rem; font-weight: bold;">
+                                        Predicted</td>
+                                </tr>
+                                <tr style="background: #f0f0f0;">
+                                    <td style="border: 1px solid #333; padding: 0.5rem; font-weight: bold;">Negative (0)
+                                    </td>
+                                    <td style="border: 1px solid #333; padding: 0.5rem; font-weight: bold;">Positive (1)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td
+                                        style="border: 1px solid #333; padding: 0.5rem; font-weight: bold; background: #f0f0f0;">
+                                        Actual Negative (0)</td>
+                                    <td style="border: 1px solid #333; padding: 0.5rem; background: #e8f5e8;">
+                                        <strong>TN</strong><br>True Negative
+                                    </td>
+                                    <td style="border: 1px solid #333; padding: 0.5rem; background: #ffebee;">
+                                        <strong>FP</strong><br>False Positive<br>(Type I Error)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td
+                                        style="border: 1px solid #333; padding: 0.5rem; font-weight: bold; background: #f0f0f0;">
+                                        Actual Positive (1)</td>
+                                    <td style="border: 1px solid #333; padding: 0.5rem; background: #ffebee;">
+                                        <strong>FN</strong><br>False Negative<br>(Type II Error)
+                                    </td>
+                                    <td style="border: 1px solid #333; padding: 0.5rem; background: #e8f5e8;">
+                                        <strong>TP</strong><br>True Positive
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <h4> Essential Classification Metrics</h4>
+                    <div
+                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+                        <div style="background: #e3f2fd; padding: 1rem; border-radius: 8px;">
+                            <h5> Accuracy</h5>
+                            <div
+                                style="background: white; padding: 0.5rem; border-radius: 4px; margin: 0.5rem 0; text-align: center;">
+                                <strong>(TP + TN) / (TP + TN + FP + FN)</strong>
+                            </div>
+                            <p><strong>Interpretation:</strong> Overall correctness</p>
+                            <p><strong>Good when:</strong> Balanced classes</p>
+                            <p><strong>Problem:</strong> Misleading with imbalanced data</p>
+                            <div style="background: #f8f9fa; padding: 0.5rem; border-radius: 4px; margin-top: 0.5rem;">
+                                <strong>Example:</strong> 95% accuracy sounds great, but not if 95% of data is one
+                                class!
+                            </div>
+                        </div>
+
+                        <div style="background: #e8f5e8; padding: 1rem; border-radius: 8px;">
+                            <h5> Precision</h5>
+                            <div
+                                style="background: white; padding: 0.5rem; border-radius: 4px; margin: 0.5rem 0; text-align: center;">
+                                <strong>TP / (TP + FP)</strong>
+                            </div>
+                            <p><strong>Interpretation:</strong> Of predicted positives, how many are actually positive?
+                            </p>
+                            <p><strong>Focus:</strong> Avoiding false alarms</p>
+                            <p><strong>Important when:</strong> False positives are costly</p>
+                            <div style="background: #f8f9fa; padding: 0.5rem; border-radius: 4px; margin-top: 0.5rem;">
+                                <strong>Example:</strong> Medical diagnosis - don't want to scare healthy patients
+                            </div>
+                        </div>
+
+                        <div style="background: #fff8e1; padding: 1rem; border-radius: 8px;">
+                            <h5> Recall (Sensitivity)</h5>
+                            <div
+                                style="background: white; padding: 0.5rem; border-radius: 4px; margin: 0.5rem 0; text-align: center;">
+                                <strong>TP / (TP + FN)</strong>
+                            </div>
+                            <p><strong>Interpretation:</strong> Of actual positives, how many did we catch?</p>
+                            <p><strong>Focus:</strong> Avoiding missed cases</p>
+                            <p><strong>Important when:</strong> False negatives are costly</p>
+                            <div style="background: #f8f9fa; padding: 0.5rem; border-radius: 4px; margin-top: 0.5rem;">
+                                <strong>Example:</strong> Cancer screening - don't want to miss any cases
+                            </div>
+                        </div>
+
+                        <div style="background: #f3e5f5; padding: 1rem; border-radius: 8px;">
+                            <h5>️ F1-Score</h5>
+                            <div
+                                style="background: white; padding: 0.5rem; border-radius: 4px; margin: 0.5rem 0; text-align: center;">
+                                <strong>2 × (Precision × Recall) / (Precision + Recall)</strong>
+                            </div>
+                            <p><strong>Interpretation:</strong> Harmonic mean of precision and recall</p>
+                            <p><strong>Good when:</strong> Need balance between precision and recall</p>
+                            <p><strong>Range:</strong> 0 to 1 (higher is better)</p>
+                            <div style="background: #f8f9fa; padding: 0.5rem; border-radius: 4px; margin-top: 0.5rem;">
+                                <strong>Use case:</strong> Imbalanced data, general performance metric
+                            </div>
+                        </div>
+                    </div>
+
+                    <h4> ROC Curve and AUC: Threshold-Independent Evaluation</h4>
+                    <div style="background: #e3f2fd; padding: 1.5rem; border-radius: 10px; margin: 1rem 0;">
+                        <h5> ROC (Receiver Operating Characteristic) Curve</h5>
+                        <p>Plots True Positive Rate vs False Positive Rate at various classification thresholds.</p>
+
+                        <div style="background: white; padding: 1rem; border-radius: 6px; margin: 1rem 0;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <div>
+                                    <p><strong>True Positive Rate (TPR):</strong></p>
+                                    <div
+                                        style="text-align: center; background: #f8f9fa; padding: 0.5rem; border-radius: 4px;">
+                                        TPR = TP / (TP + FN) = Recall
+                                    </div>
+                                </div>
+                                <div>
+                                    <p><strong>False Positive Rate (FPR):</strong></p>
+                                    <div
+                                        style="text-align: center; background: #f8f9fa; padding: 0.5rem; border-radius: 4px;">
+                                        FPR = FP / (FP + TN)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h5> AUC (Area Under Curve) Interpretation:</h5>
+                        <ul>
+                            <li><strong>AUC = 1.0:</strong> Perfect classifier</li>
+                            <li><strong>AUC = 0.9-1.0:</strong> Excellent</li>
+                            <li><strong>AUC = 0.8-0.9:</strong> Good</li>
+                            <li><strong>AUC = 0.7-0.8:</strong> Fair</li>
+                            <li><strong>AUC = 0.6-0.7:</strong> Poor</li>
+                            <li><strong>AUC = 0.5:</strong> Random guessing</li>
+                            <li><strong>AUC < 0.5:</strong> Worse than random (invert predictions!)</li>
+                        </ul>
+
+                        <div style="background: #e8f5e8; padding: 1rem; border-radius: 6px; margin-top: 1rem;">
+                            <strong> AUC Advantage:</strong> Single number summarizing performance across all
+                            thresholds - great for model comparison!
+                        </div>
+                    </div>
+                </div>
+
+                <h2>🔧 Hyperparameter Tuning: Optimizing Model Performance</h2>
+                <div class="azbn-card">
+                    <h3>GridSearchCV and Cross-Validation Mastery</h3>
+
+                    <div style="background: #fff8e1; padding: 1.5rem; border-radius: 10px; margin: 1rem 0;">
+                        <h4> The Hyperparameter Challenge</h4>
+                        <p>Unlike model parameters (learned from data), hyperparameters are set before training and
+                            control the learning process. Finding optimal values requires systematic search.</p>
+
+                        <h5> Key Hyperparameters by Algorithm:</h5>
+                        <div
+                            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin: 1rem 0;">
+                            <div style="background: #e3f2fd; padding: 1rem; border-radius: 6px;">
+                                <h6>Logistic Regression</h6>
+                                <ul style="font-size: 0.9rem;">
+                                    <li><strong>C:</strong> Regularization strength</li>
+                                    <li><strong>penalty:</strong> 'l1', 'l2', 'elasticnet'</li>
+                                    <li><strong>solver:</strong> Optimization algorithm</li>
+                                    <li><strong>max_iter:</strong> Maximum iterations</li>
+                                </ul>
+                            </div>
+                            <div style="background: #e8f5e8; padding: 1rem; border-radius: 6px;">
+                                <h6>⚡ SVM</h6>
+                                <ul style="font-size: 0.9rem;">
+                                    <li><strong>C:</strong> Penalty parameter</li>
+                                    <li><strong>kernel:</strong> 'linear', 'rbf', 'poly'</li>
+                                    <li><strong>gamma:</strong> Kernel coefficient</li>
+                                    <li><strong>degree:</strong> Polynomial degree</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h4> Search Strategies</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.5rem 0;">
+                        <div style="background: #e3f2fd; padding: 1rem; border-radius: 8px;">
+                            <h5> Grid Search</h5>
+                            <p><strong>Strategy:</strong> Exhaustive search over parameter grid</p>
+                            <ul style="font-size: 0.9rem;">
+                                <li>Define parameter ranges/values</li>
+                                <li>Try every combination</li>
+                                <li>Computationally expensive but thorough</li>
+                                <li>Guaranteed to find best in grid</li>
+                            </ul>
+                            <div style="background: #f8f9fa; padding: 0.5rem; border-radius: 4px; margin-top: 0.5rem;">
+                                <strong>Best for:</strong> Small parameter spaces, final tuning
+                            </div>
+                        </div>
+
+                        <div style="background: #e8f5e8; padding: 1rem; border-radius: 8px;">
+                            <h5> Random Search</h5>
+                            <p><strong>Strategy:</strong> Randomly sample parameter combinations</p>
+                            <ul style="font-size: 0.9rem;">
+                                <li>Define parameter distributions</li>
+                                <li>Sample N random combinations</li>
+                                <li>More efficient for high dimensions</li>
+                                <li>Often finds good solutions faster</li>
+                            </ul>
+                            <div style="background: #f8f9fa; padding: 0.5rem; border-radius: 4px; margin-top: 0.5rem;">
+                                <strong>Best for:</strong> Large parameter spaces, initial exploration
+                            </div>
+                        </div>
+                    </div>
+
+                    <h4> Cross-Validation: Robust Performance Estimation</h4>
+                    <div style="background: #f3e5f5; padding: 1.5rem; border-radius: 10px; margin: 1rem 0;">
+                        <h5> K-Fold Cross-Validation Process:</h5>
+                        <ol>
+                            <li><strong>Split data into K folds</strong> (usually K=5 or K=10)</li>
+                            <li><strong>For each fold:</strong>
+                                <ul style="margin-left: 1rem;">
+                                    <li>Train on K-1 folds</li>
+                                    <li>Validate on remaining fold</li>
+                                    <li>Record performance metric</li>
+                                </ul>
+                            </li>
+                            <li><strong>Average performance</strong> across all folds</li>
+                            <li><strong>Standard deviation</strong> indicates stability</li>
+                        </ol>
+
+                        <div style="background: white; padding: 1rem; border-radius: 6px; margin: 1rem 0;">
+                            <h6> Benefits of Cross-Validation:</h6>
+                            <ul style="font-size: 0.9rem;">
+                                <li>More robust than single train-test split</li>
+                                <li>Uses all data for both training and validation</li>
+                                <li>Provides estimate of model variance</li>
+                                <li>Reduces dependence on specific data split</li>
+                            </ul>
+                        </div>
+
+                        <div style="background: #e8f5e8; padding: 1rem; border-radius: 6px; margin-top: 1rem;">
+                            <h6>⚠️ Important Considerations:</h6>
+                            <ul style="font-size: 0.9rem;">
+                                <li><strong>Stratification:</strong> Preserve class distribution in each fold</li>
+                                <li><strong>Time series:</strong> Use TimeSeriesSplit for temporal data</li>
+                                <li><strong>Computational cost:</strong> K times more expensive than single split</li>
+                                <li><strong>Nested CV:</strong> For unbiased hyperparameter selection</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <h2>⚖️ Handling Class Imbalance</h2>
+                <div class="azbn-card">
+                    <h3>When Classes Aren't Equal</h3>
+
+                    <div style="background: #ffebee; padding: 1.5rem; border-radius: 10px; margin: 1rem 0;">
+                        <h4>❌ The Imbalanced Data Problem</h4>
+                        <p>Many real-world problems have imbalanced classes (e.g., fraud detection: 99.9% legitimate,
+                            0.1% fraud). Standard metrics and algorithms can be misleading.</p>
+
+                        <h5>🚨 Common Issues:</h5>
+                        <ul>
+                            <li>High accuracy but poor minority class detection</li>
+                            <li>Models biased toward majority class</li>
+                            <li>Misleading performance metrics</li>
+                            <li>Poor generalization to new data</li>
+                        </ul>
+                    </div>
+
+                    <h4>🛠️ Solutions for Imbalanced Data</h4>
+                    <div
+                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+                        <div style="background: #e3f2fd; padding: 1rem; border-radius: 8px;">
+                            <h5> Sampling Techniques</h5>
+                            <ul style="font-size: 0.9rem;">
+                                <li><strong>Random Oversampling:</strong> Duplicate minority samples</li>
+                                <li><strong>Random Undersampling:</strong> Remove majority samples</li>
+                                <li><strong>SMOTE:</strong> Generate synthetic minority samples</li>
+                                <li><strong>Tomek Links:</strong> Remove borderline samples</li>
+                            </ul>
+                        </div>
+
+                        <div style="background: #e8f5e8; padding: 1rem; border-radius: 8px;">
+                            <h5>️ Algorithm Modifications</h5>
+                            <ul style="font-size: 0.9rem;">
+                                <li><strong>Class Weights:</strong> Penalize misclassification differently</li>
+                                <li><strong>Threshold Tuning:</strong> Adjust decision boundary</li>
+                                <li><strong>Cost-Sensitive Learning:</strong> Incorporate misclassification costs</li>
+                                <li><strong>Ensemble Methods:</strong> Combine multiple models</li>
+                            </ul>
+                        </div>
+
+                        <div style="background: #fff8e1; padding: 1rem; border-radius: 8px;">
+                            <h5> Evaluation Adjustments</h5>
+                            <ul style="font-size: 0.9rem;">
+                                <li><strong>Focus on F1-Score:</strong> Instead of accuracy</li>
+                                <li><strong>Precision-Recall Curves:</strong> Better than ROC for imbalanced data</li>
+                                <li><strong>Balanced Accuracy:</strong> Average of per-class accuracies</li>
+                                <li><strong>Matthews Correlation:</strong> Considers all confusion matrix elements</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <h2> Key Takeaways and Best Practices</h2>
+                <div class="azbn-deployment-status" style="background: #e3f2fd; padding: 1.5rem; border-radius: 10px; margin: 2rem 0;">
+                    <p><strong>✅ Chapter 3 Mastery:</strong></p>
+                    <p>• Logistic regression with sigmoid function and maximum likelihood</p>
+                    <p>• SVM with kernel methods and margin maximization theory</p>
+                    <p>• Comprehensive evaluation metrics beyond accuracy</p>
+                    <p>• Multi-class classification strategies and implementations</p>
+                    <p>• Hyperparameter tuning with cross-validation best practices</p>
+                    <p>• Class imbalance handling and robust evaluation techniques</p>
+                </div>
+
+                <div style="background: #e3f2fd; padding: 1.5rem; border-radius: 10px; margin: 2rem 0;">
+                    <h3> Professional Classification Guidelines:</h3>
+                    <ol>
+                        <li><strong>Start with simple baselines:</strong> Logistic regression before complex models</li>
+                        <li><strong>Understand your data:</strong> Check class distribution and feature relationships
+                        </li>
+                        <li><strong>Choose appropriate metrics:</strong> F1-score for imbalanced, AUC for ranking</li>
+                        <li><strong>Use proper validation:</strong> Stratified K-fold cross-validation</li>
+                        <li><strong>Tune hyperparameters systematically:</strong> Grid/random search with CV</li>
+                        <li><strong>Address class imbalance:</strong> Use appropriate techniques and metrics</li>
+                        <li><strong>Interpret results carefully:</strong> Understand what your model is learning</li>
+                        <li><strong>Consider business context:</strong> Precision vs recall trade-offs matter</li>
+                    </ol>
+                </div>
+                <h2>💻 Complete Python Implementation</h2>
+                <div class="azbn-card">
+                    <h3>Classification Master Class: Hands-On Code</h3>
+
+                    <div style="background: #e8f5e8; padding: 1.5rem; border-radius: 10px; margin: 1rem 0;">
+                        <h4> Binary Classification Project</h4>
+
+                        <div
+                            style="background: #1e1e1e; color: #f8f8f2; padding: 1rem; border-radius: 6px; margin: 1rem 0; font-family: 'Courier New', monospace; font-size: 0.9rem;">
+                            <div style="color: #75715e;"># Complete Classification Pipeline</div>
+                            <div><span style="color: #f92672;">import</span> <span style="color: #f8f8f2;">numpy</span>
+                                <span style="color: #f92672;">as</span> <span style="color: #f8f8f2;">np</span>
+                            </div>
+                            <div><span style="color: #f92672;">import</span> <span style="color: #f8f8f2;">pandas</span>
+                                <span style="color: #f92672;">as</span> <span style="color: #f8f8f2;">pd</span>
+                            </div>
+                            <div><span style="color: #f92672;">import</span> <span
+                                    style="color: #f8f8f2;">matplotlib.pyplot</span> <span
+                                    style="color: #f92672;">as</span> <span style="color: #f8f8f2;">plt</span></div>
+                            <div><span style="color: #f92672;">from</span> <span
+                                    style="color: #f8f8f2;">sklearn.datasets</span> <span
+                                    style="color: #f92672;">import</span> <span
+                                    style="color: #f8f8f2;">load_breast_cancer</span></div>
+                            <div><span style="color: #f92672;">from</span> <span
+                                    style="color: #f8f8f2;">sklearn.model_selection</span> <span
+                                    style="color: #f92672;">import</span> <span
+                                    style="color: #f8f8f2;">train_test_split, GridSearchCV</span></div>
+                            <div><span style="color: #f92672;">from</span> <span
+                                    style="color: #f8f8f2;">sklearn.preprocessing</span> <span
+                                    style="color: #f92672;">import</span> <span
+                                    style="color: #f8f8f2;">StandardScaler</span></div>
+                            <div><span style="color: #f92672;">from</span> <span
+                                    style="color: #f8f8f2;">sklearn.linear_model</span> <span
+                                    style="color: #f92672;">import</span> <span
+                                    style="color: #f8f8f2;">LogisticRegression</span></div>
+                            <div><span style="color: #f92672;">from</span> <span
+                                    style="color: #f8f8f2;">sklearn.svm</span> <span
+                                    style="color: #f92672;">import</span> <span style="color: #f8f8f2;">SVC</span></div>
+                            <div><span style="color: #f92672;">from</span> <span
+                                    style="color: #f8f8f2;">sklearn.metrics</span> <span
+                                    style="color: #f92672;">import</span> <span
+                                    style="color: #f8f8f2;">classification_report, confusion_matrix,
+                                    roc_auc_score</span>
+                            </div>
+                            <div style="color: #75715e; margin-top: 1rem;"># Load and prepare data</div>
+                            <div><span style="color: #f8f8f2;">cancer</span> <span style="color: #f92672;">=</span>
+                                <span style="color: #f8f8f2;">load_breast_cancer()</span>
+                            </div>
+                            <div><span style="color: #f8f8f2;">X, y</span> <span style="color: #f92672;">=</span> <span
+                                    style="color: #f8f8f2;">cancer.data, cancer.target</span></div>
+
+                            <div><span style="color: #f8f8f2;">X_train, X_test, y_train, y_test</span> <span
+                                    style="color: #f92672;">=</span> <span
+                                    style="color: #f8f8f2;">train_test_split(</span></div>
+                            <div><span style="color: #f8f8f2;"> X, y, test_size=0.2, random_state=42, stratify=y</span>
+                            </div>
+                            <div><span style="color: #f8f8f2;">)</span></div>
+
+                            <div style="color: #75715e;"># Scale features</div>
+                            <div><span style="color: #f8f8f2;">scaler</span> <span style="color: #f92672;">=</span>
+                                <span style="color: #f8f8f2;">StandardScaler()</span>
+                            </div>
+                            <div><span style="color: #f8f8f2;">X_train_scaled</span> <span
+                                    style="color: #f92672;">=</span> <span
+                                    style="color: #f8f8f2;">scaler.fit_transform(X_train)</span></div>
+                            <div><span style="color: #f8f8f2;">X_test_scaled</span> <span
+                                    style="color: #f92672;">=</span> <span
+                                    style="color: #f8f8f2;">scaler.transform(X_test)</span></div>
+
+                            <div style="color: #66d9ef;">print</div><span style="color: #f92672;">(</span><span
+                                style="color: #e6db74;">f"Dataset: {X.shape[0]} samples, {X.shape[1]}
+                                features"</span><span style="color: #f92672;">)</span>
+                        </div>
+                        <div><span style="color: #66d9ef;">print</span><span style="color: #f92672;">(</span><span
+                                style="color: #e6db74;">f"Classes: {cancer.target_names}"</span><span
+                                style="color: #f92672;">)</span></div>
+                    </div>
+
+                    <div style="background: #fff3e0; padding: 1rem; border-radius: 6px; margin-top: 1rem;">
+                        <strong> Expected Results:</strong>
+                        <ul style="font-size: 0.9rem; margin: 0.5rem 0;">
+                            <li>Logistic Regression AUC: ~0.99</li>
+                            <li>SVM AUC: ~0.99</li>
+                            <li>Both models achieve excellent performance on this dataset</li>
+                            <li>Hyperparameter tuning often improves performance</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div style="background: #e8f5e8; padding: 1.5rem; border-radius: 10px; margin: 1rem 0;">
+                <h4>⚖️ Handling Imbalanced Classification</h4>
+
+                <div
+                    style="background: #1e1e1e; color: #f8f8f2; padding: 1rem; border-radius: 6px; margin: 1rem 0; font-family: 'Courier New', monospace; font-size: 0.9rem;">
+                    <div style="color: #75715e;">
+
+                        <div><span style="color: #f92672;">from</span> <span style="color: #f8f8f2;">collections</span>
+                            <span style="color: #f92672;">import</span> <span style="color: #f8f8f2;">Counter</span>
+                        </div>
+
+                        <div style="color: #75715e; margin-top: 1rem;"># Create imbalanced dataset (keep only 10% of
+                            malignant cases)</div>
+                        <div><span style="color: #f8f8f2;">malignant_indices</span> <span
+                                style="color: #f92672;">=</span> <span style="color: #f8f8f2;">np.where(y_train</span>
+                            <span style="color: #f92672;">==</span> <span style="color: #ae81ff;">0</span><span
+                                style="color: #f8f8f2;">)[0]</span>
+                        </div>
+                        <div><span style="color: #f8f8f2;">benign_indices</span> <span style="color: #f92672;">=</span>
+                            <span style="color: #f8f8f2;">np.where(y_train</span> <span
+                                style="color: #f92672;">==</span> <span style="color: #ae81ff;">1</span><span
+                                style="color: #f8f8f2;">)[0]</span>
+                        </div>
+
+                        <div style="color: #75715e;"># Keep only 10% of malignant cases</div>
+                        <div><span style="color: #f8f8f2;">keep_malignant</span> <span style="color: #f92672;">=</span>
+                            <span style="color: #f8f8f2;">np.random.choice(malignant_indices, size=</span><span
+                                style="color: #66d9ef;">int</span><span style="color: #f92672;">(</span><span
+                                style="color: #66d9ef;">len</span><span style="color: #f92672;">(</span><span
+                                style="color: #f8f8f2;">malignant_indices</span><span style="color: #f92672;">)</span>
+                            <span style="color: #f92672;">*</span> <span style="color: #ae81ff;">0.1</span><span
+                                style="color: #f92672;">)</span><span style="color: #f8f8f2;">, replace=</span><span
+                                style="color: #ae81ff;">False</span><span style="color: #f8f8f2;">)</span>
+                        </div>
+                        <div><span style="color: #f8f8f2;">balanced_indices</span> <span
+                                style="color: #f92672;">=</span> <span
+                                style="color: #f8f8f2;">np.concatenate([keep_malignant, benign_indices])</span></div>
+
+                        <div><span style="color: #f8f8f2;">X_imbalanced</span> <span style="color: #f92672;">=</span>
+                            <span style="color: #f8f8f2;">X_train_scaled[balanced_indices]</span>
+                        </div>
+                        <div><span style="color: #f8f8f2;">y_imbalanced</span> <span style="color: #f92672;">=</span>
+                            <span style="color: #f8f8f2;">y_train[balanced_indices]</span>
+                        </div>
+
+                        <div style="color: #66d9ef;">print</div><span style="color: #f92672;">(</span><span
+                            style="color: #e6db74;">f"Imbalanced dataset class distribution:"</span><span
+                            style="color: #f92672;">)</span>
+                    </div>
+                    <div><span style="color: #66d9ef;">print</span><span style="color: #f92672;">(</span><span
+                            style="color: #f8f8f2;">Counter(y_imbalanced)</span><span style="color: #f92672;">)</span>
+                    </div>
+
+                    <div style="color: #75715e; margin-top: 1rem;"># Compare models with/without handling imbalance
+                    </div>
+                    <div style="color: #75715e;"># 1. Standard model (suffers from imbalance)</div>
+                    <div><span style="color: #f8f8f2;">lr_standard</span> <span style="color: #f92672;">=</span> <span
+                            style="color: #f8f8f2;">LogisticRegression(random_state=42)</span></div>
+                    <div><span style="color: #f8f8f2;">lr_standard.fit(X_imbalanced, y_imbalanced)</span></div>
+                    <div><span style="color: #f8f8f2;">pred_standard</span> <span style="color: #f92672;">=</span> <span
+                            style="color: #f8f8f2;">lr_standard.predict(X_test_scaled)</span></div>
+
+                    <div style="color: #75715e;"># 2. Balanced model (handles imbalance)</div>
+                    <div><span style="color: #f8f8f2;">lr_balanced</span> <span style="color: #f92672;">=</span> <span
+                            style="color: #f8f8f2;">LogisticRegression(class_weight=</span><span
+                            style="color: #e6db74;">'balanced'</span><span style="color: #f8f8f2;">,
+                            random_state=42)</span></div>
+                    <div><span style="color: #f8f8f2;">lr_balanced.fit(X_imbalanced, y_imbalanced)</span></div>
+                    <div><span style="color: #f8f8f2;">pred_balanced</span> <span style="color: #f92672;">=</span> <span
+                            style="color: #f8f8f2;">lr_balanced.predict(X_test_scaled)</span></div>
+
+                    <div style="color: #66d9ef;">print</span><span style="color: #f92672;">(</span><span
+                            style="color: #e6db74;">f"\nComparison on Imbalanced Data:"</span><span
+                            style="color: #f92672;">)</span></div>
+                    <div><span style="color: #66d9ef;">print</span><span style="color: #f92672;">(</span><span
+                            style="color: #e6db74;">f"Standard Model F1-Score: </span><span
+                            style="color: #e6db74;">{f1_score(y_test, pred_standard):.3f}</span><span
+                            style="color: #e6db74;">"</span><span style="color: #f92672;">)</span></div>
+                    <div><span style="color: #66d9ef;">print</span><span style="color: #f92672;">(</span><span
+                            style="color: #e6db74;">f"Balanced Model F1-Score: </span><span
+                            style="color: #e6db74;">{f1_score(y_test, pred_balanced):.3f}</span><span
+                            style="color: #e6db74;">"</span><span style="color: #f92672;">)</span></div>
+                </div>
+
+                <div style="background: #fff3e0; padding: 1rem; border-radius: 6px; margin-top: 1rem;">
+                    <strong> Expected Results:</strong>
+                    <ul style="font-size: 0.9rem; margin: 0.5rem 0;">
+                        <li>Standard model: High accuracy but poor minority class detection</li>
+                        <li>Balanced model: Better F1-score and minority class performance</li>
+                        <li>SMOTE can further improve results with synthetic samples</li>
+                        <li>Always evaluate with appropriate metrics for imbalanced data</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div style="background: #fff3e0; padding: 1rem; border-radius: 6px; margin-top: 1rem;">
+                <strong> Expected Results:</strong>
+                <ul style="font-size: 0.9rem; margin: 0.5rem 0;">
+                    <li>Logistic Regression: ~97% accuracy</li>
+                    <li>SVM with RBF: ~98% accuracy</li>
+                    <li>Multi-class strategies perform similarly on Iris</li>
+                    <li>Class imbalance techniques significantly improve minority class detection</li>
+                    <li>Professional evaluation requires multiple metrics beyond accuracy</li>
+                </ul>
+            </div>
+                    <div style="text-align: center; margin: 40px 0;">
+                        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: blue; padding: 30px; border-radius: 15px;">
+                            <h2> Congratulations!</h2>
+                            <p style="font-size: 1.2em; margin: 20px 0;color: white">You've completed Chapter 3 and built a solid foundation in Classification!</p>
+                
+                            
+                            <div style="display: flex; justify-content: space-between; margin-top: 30px;">
+                                <!-- Left-aligned button -->
+                                <button style="background: white; color: #667eea; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; margin: 10px; cursor: pointer;">
+                                    <a href="./chapter2.html" class="azbn-btn azbn-secondary" style="text-decoration: none; color: inherit;">📚 Back to Chapter 2: Regression</a>
+                                </button>
+                                
+                                <button style="background: white; color: #667eea; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; margin: 10px; cursor: pointer;">
+                                    <a href="#top" class="azbn-btn azbn-secondary" style="text-decoration: none; color: inherit;">  🔄 Review This Chapter</a>
+                                </button>
+                                <!-- Right-aligned button -->
+                                <button style="background: white; color: #667eea; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; margin: 10px; cursor: pointer;">
+                                    <a href="./index.html" class="azbn-btn azbn-secondary" style="text-decoration: none; color: inherit;"> Course Home </a>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </section>
+    </main>
+</body>
+
+</html>

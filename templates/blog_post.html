@@ -1,0 +1,620 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }} - {{ site_title }}{% endblock %}
+
+{% block meta_description %}{{ post.meta_description }}{% endblock %}
+
+{% block og_title %}{{ post.title }}{% endblock %}
+{% block og_description %}{{ post.excerpt }}{% endblock %}
+
+{% block extra_css %}
+<style>
+.blog-post-header {
+    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+    padding: var(--space-3xl) 0 var(--space-2xl);
+}
+
+.post-header-content {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.post-category-link {
+    display: inline-block;
+    background: var(--primary-color);
+    color: var(--text-light);
+    padding: var(--space-xs) var(--space-md);
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: var(--space-lg);
+    transition: background-color var(--transition-fast);
+}
+
+.post-category-link:hover {
+    background: var(--primary-dark);
+    color: var(--text-light);
+}
+
+.post-header h1 {
+    font-size: 2.5rem;
+    line-height: 1.2;
+    margin-bottom: var(--space-lg);
+    color: var(--text-primary);
+}
+
+.post-excerpt {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: var(--space-2xl);
+}
+
+.post-meta-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-lg);
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-lg);
+}
+
+.post-meta-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+.post-tags-header {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+}
+
+.post-content-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: var(--space-3xl) var(--space-lg);
+}
+
+.post-content {
+    font-size: 1.125rem;
+    line-height: 1.7;
+    color: var(--text-primary);
+}
+
+.post-content h2 {
+    font-size: 2rem;
+    margin-top: var(--space-3xl);
+    margin-bottom: var(--space-lg);
+    color: var(--text-primary);
+    border-bottom: 2px solid var(--border-light);
+    padding-bottom: var(--space-sm);
+}
+
+.post-content h3 {
+    font-size: 1.5rem;
+    margin-top: var(--space-2xl);
+    margin-bottom: var(--space-md);
+    color: var(--primary-color);
+}
+
+.post-content h4 {
+    font-size: 1.25rem;
+    margin-top: var(--space-xl);
+    margin-bottom: var(--space-md);
+    color: var(--text-primary);
+}
+
+.post-content p {
+    margin-bottom: var(--space-lg);
+}
+
+.post-content ul,
+.post-content ol {
+    margin-bottom: var(--space-lg);
+    padding-left: var(--space-xl);
+}
+
+.post-content li {
+    margin-bottom: var(--space-sm);
+}
+
+.post-content blockquote {
+    border-left: 4px solid var(--primary-color);
+    padding-left: var(--space-lg);
+    margin: var(--space-2xl) 0;
+    font-style: italic;
+    color: var(--text-secondary);
+    background: var(--bg-secondary);
+    padding: var(--space-lg);
+    border-radius: var(--radius-md);
+}
+
+.post-content pre {
+    background: var(--bg-dark);
+    color: var(--text-light);
+    padding: var(--space-lg);
+    border-radius: var(--radius-md);
+    overflow-x: auto;
+    margin: var(--space-xl) 0;
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+.post-content code {
+    background: var(--bg-tertiary);
+    color: var(--primary-color);
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+}
+
+.post-content pre code {
+    background: none;
+    color: inherit;
+    padding: 0;
+}
+
+.post-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--radius-md);
+    margin: var(--space-xl) 0;
+    box-shadow: var(--shadow-md);
+}
+
+.post-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: var(--space-xl) 0;
+    box-shadow: var(--shadow-sm);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.post-content th,
+.post-content td {
+    padding: var(--space-md);
+    text-align: left;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.post-content th {
+    background: var(--bg-secondary);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.post-footer {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: var(--space-2xl) var(--space-lg);
+    border-top: 1px solid var(--border-light);
+}
+
+.post-footer-content {
+    display: grid;
+    gap: var(--space-2xl);
+}
+
+.post-tags-footer {
+    text-align: center;
+}
+
+.post-tags-footer h3 {
+    margin-bottom: var(--space-md);
+    color: var(--text-primary);
+}
+
+.tags-list {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+}
+
+.tag {
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: all var(--transition-fast);
+}
+
+.tag:hover {
+    background: var(--primary-color);
+    color: var(--text-light);
+}
+
+.post-share {
+    text-align: center;
+}
+
+.post-share h3 {
+    margin-bottom: var(--space-md);
+    color: var(--text-primary);
+}
+
+.share-buttons {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-md);
+}
+
+.share-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: var(--radius-full);
+    color: var(--text-light);
+    text-decoration: none;
+    font-size: 1.25rem;
+    transition: transform var(--transition-fast);
+}
+
+.share-btn:hover {
+    transform: translateY(-2px);
+    color: var(--text-light);
+}
+
+.share-btn.twitter { background: #1DA1F2; }
+.share-btn.linkedin { background: #0077B5; }
+.share-btn.facebook { background: #1877F2; }
+.share-btn.email { background: var(--text-secondary); }
+
+.related-posts {
+    background: var(--bg-secondary);
+    padding: var(--space-3xl) 0;
+}
+
+.related-posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--space-2xl);
+}
+
+.related-post-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    transition: transform var(--transition-normal);
+}
+
+.related-post-card:hover {
+    transform: translateY(-5px);
+}
+
+.related-post-image {
+    height: 180px;
+    overflow: hidden;
+}
+
+.related-post-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-slow);
+}
+
+.related-post-card:hover .related-post-image img {
+    transform: scale(1.05);
+}
+
+.related-post-content {
+    padding: var(--space-lg);
+}
+
+.related-post-category {
+    background: var(--primary-color);
+    color: var(--text-light);
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    display: inline-block;
+    margin-bottom: var(--space-md);
+}
+
+.related-post-title {
+    margin-bottom: var(--space-md);
+}
+
+.related-post-title a {
+    color: var(--text-primary);
+    text-decoration: none;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.related-post-title a:hover {
+    color: var(--primary-color);
+}
+
+.related-post-meta {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-md);
+}
+
+.related-post-excerpt {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+.back-to-blog {
+    text-align: center;
+    margin-bottom: var(--space-2xl);
+}
+
+.back-to-blog a {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: gap var(--transition-fast);
+}
+
+.back-to-blog a:hover {
+    gap: var(--space-md);
+}
+
+@media (max-width: 768px) {
+    .post-header h1 {
+        font-size: 2rem;
+    }
+    
+    .post-meta-info {
+        flex-direction: column;
+        gap: var(--space-md);
+    }
+    
+    .post-content-wrapper {
+        padding: var(--space-2xl) var(--space-md);
+    }
+    
+    .post-content {
+        font-size: 1rem;
+    }
+    
+    .post-content h2 {
+        font-size: 1.5rem;
+    }
+    
+    .share-buttons {
+        gap: var(--space-sm);
+    }
+    
+    .related-posts-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Back to Blog Link -->
+<div class="container">
+    <div class="back-to-blog">
+        <a href="{{ url_for('blog') }}">
+            <i class="fas fa-arrow-left"></i> Back to Blog
+        </a>
+    </div>
+</div>
+
+<!-- Post Header -->
+<header class="blog-post-header">
+    <div class="container">
+        <div class="post-header-content">
+            <a href="{{ url_for('blog_category', category=post.category) }}" class="post-category-link">
+                {{ post.category }}
+            </a>
+            
+            <h1>{{ post.title }}</h1>
+            
+            <p class="post-excerpt">{{ post.excerpt }}</p>
+            
+            <div class="post-meta-info">
+                <div class="post-meta-item">
+                    <i class="fas fa-calendar"></i>
+                    <time datetime="{{ post.created_at.isoformat() }}">
+                        {{ post.created_at.strftime('%B %d, %Y') }}
+                    </time>
+                </div>
+                
+                <div class="post-meta-item">
+                    <i class="fas fa-clock"></i>
+                    <span>{{ post.read_time }} min read</span>
+                </div>
+                
+                <div class="post-meta-item">
+                    <i class="fas fa-user"></i>
+                    <span>{{ post.author }}</span>
+                </div>
+            </div>
+            
+            <div class="post-tags-header">
+                {% for tag in post.tags[:5] %}
+                <span class="tag">{{ tag }}</span>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article class="post-content-wrapper">
+    <div class="post-content">
+        {{ post.content|safe }}
+    </div>
+</article>
+
+<!-- Post Footer -->
+<footer class="post-footer">
+    <div class="post-footer-content">
+        <!-- Tags -->
+        <div class="post-tags-footer">
+            <h3>Topics Covered</h3>
+            <div class="tags-list">
+                {% for tag in post.tags %}
+                <a href="{{ url_for('blog') }}?tag={{ tag }}" class="tag">{{ tag }}</a>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- Share -->
+        <div class="post-share">
+            <h3>Share This Article</h3>
+            <div class="share-buttons">
+                <a href="https://twitter.com/intent/tweet?url={{ request.url }}&text={{ post.title }}" 
+                   target="_blank" class="share-btn twitter" aria-label="Share on Twitter">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.url }}" 
+                   target="_blank" class="share-btn linkedin" aria-label="Share on LinkedIn">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+                <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.url }}" 
+                   target="_blank" class="share-btn facebook" aria-label="Share on Facebook">
+                    <i class="fab fa-facebook"></i>
+                </a>
+                <a href="mailto:?subject={{ post.title }}&body=Check out this article: {{ request.url }}" 
+                   class="share-btn email" aria-label="Share via Email">
+                    <i class="fas fa-envelope"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Related Posts -->
+{% if related_posts %}
+<section class="related-posts">
+    <div class="container">
+        <h2 class="section-title">Related Articles</h2>
+        
+        <div class="related-posts-grid">
+            {% for related_post in related_posts %}
+            <article class="related-post-card">
+                <div class="related-post-image">
+                    <img src="{{ related_post.image_url }}" alt="{{ related_post.title }}" loading="lazy">
+                </div>
+                
+                <div class="related-post-content">
+                    <span class="related-post-category">{{ related_post.category }}</span>
+                    
+                    <h3 class="related-post-title">
+                        <a href="{{ url_for('blog_post', slug=related_post.slug) }}">
+                            {{ related_post.title }}
+                        </a>
+                    </h3>
+                    
+                    <div class="related-post-meta">
+                        {{ related_post.created_at.strftime('%B %d, %Y') }} • {{ related_post.read_time }} min read
+                    </div>
+                    
+                    <p class="related-post-excerpt">{{ related_post.excerpt[:100] }}...</p>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Smooth scrolling for internal links
+    const internalLinks = document.querySelectorAll('a[href^="#"]');
+    internalLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href').substring(1);
+            const targetElement = document.getElementById(targetId);
+            
+            if (targetElement) {
+                targetElement.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+    
+    // Reading progress indicator
+    const progressBar = document.createElement('div');
+    progressBar.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 0%;
+        height: 3px;
+        background: var(--primary-color);
+        z-index: 9999;
+        transition: width 0.1s ease;
+    `;
+    document.body.appendChild(progressBar);
+    
+    window.addEventListener('scroll', function() {
+        const article = document.querySelector('.post-content');
+        if (article) {
+            const articleTop = article.offsetTop;
+            const articleHeight = article.offsetHeight;
+            const windowHeight = window.innerHeight;
+            const scrollTop = window.pageYOffset;
+            
+            const articleBottom = articleTop + articleHeight - windowHeight;
+            const progress = Math.min(Math.max((scrollTop - articleTop) / (articleBottom - articleTop), 0), 1);
+            
+            progressBar.style.width = (progress * 100) + '%';
+        }
+    });
+    
+    // Copy code blocks
+    const codeBlocks = document.querySelectorAll('pre code');
+    codeBlocks.forEach(block => {
+        const button = document.createElement('button');
+        button.textContent = 'Copy';
+        button.style.cssText = `
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        `;
+        
+        const pre = block.parentElement;
+        pre.style.position = 'relative';
+        pre.appendChild(button);
+        
+        button.addEventListener('click', function() {
+            navigator.clipboard.writeText(block.textContent);
+            this.textContent = 'Copied!';
+            setTimeout(() => {
+                this.textContent = 'Copy';
+            }, 2000);
+        });
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+
+{% block title %}About - {{ site_title }}{% endblock %}
+
+{% block content %}
+<section class="about-page">
+    <div class="container">
+        <div class="about-hero">
+            <div class="about-content">
+                <h1>About Alireza Barzin Zanganeh</h1>
+                <p class="about-subtitle">AI/ML Engineer & Data Scientist</p>
+                
+                <div class="about-intro">
+                    <p>Passionate about creating intelligent solutions through machine learning, deep learning, and data science. I specialize in building scalable AI systems that solve real-world problems and drive business value.</p>
+                </div>
+            </div>
+            
+            <div class="about-image">
+                <img src="{{ url_for('static', filename='images/my_photo.png') }}" 
+                     alt="Alireza Barzin Zanganeh" class="about-profile-image">
+            </div>
+        </div>
+        
+        <div class="about-details">
+            <div class="about-section">
+                <h2>Background</h2>
+                <p>With extensive experience in artificial intelligence and machine learning, I focus on developing innovative solutions that bridge the gap between complex algorithms and practical business applications. My expertise spans across various domains including natural language processing, computer vision, and predictive analytics.</p>
+            </div>
+            
+            <div class="about-section">
+                <h2>Expertise</h2>
+                <div class="expertise-grid">
+                    <div class="expertise-item">
+                        <h3>Machine Learning</h3>
+                        <p>Supervised and unsupervised learning, ensemble methods, feature engineering</p>
+                    </div>
+                    <div class="expertise-item">
+                        <h3>Deep Learning</h3>
+                        <p>Neural networks, CNNs, RNNs, transformers, and custom architectures</p>
+                    </div>
+                    <div class="expertise-item">
+                        <h3>Data Science</h3>
+                        <p>Statistical analysis, data visualization, and predictive modeling</p>
+                    </div>
+                    <div class="expertise-item">
+                        <h3>MLOps</h3>
+                        <p>Model deployment, monitoring, and production pipeline management</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="about-section">
+                <h2>Education & Certifications</h2>
+                <div class="education-item">
+                    <h3>Advanced Studies in AI/ML</h3>
+                    <p>Specialized focus on machine learning algorithms, deep learning frameworks, and statistical modeling</p>
+                </div>
+            </div>
+            
+            <div class="about-section">
+                <h2>Let's Connect</h2>
+                <p>I'm always interested in discussing new opportunities, innovative projects, and ways to apply AI/ML to solve complex problems.</p>
+                
+                <div class="contact-links">
+                    <a href="mailto:{{ social_links.email }}" class="contact-btn">
+                        <i class="fas fa-envelope"></i> Email
+                    </a>
+                    <a href="{{ social_links.linkedin }}" target="_blank" class="contact-btn">
+                        <i class="fab fa-linkedin"></i> LinkedIn
+                    </a>
+                    <a href="{{ social_links.github }}" target="_blank" class="contact-btn">
+                        <i class="fab fa-github"></i> GitHub
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.about-page {
+    padding: var(--space-3xl) 0;
+}
+
+.about-hero {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--space-3xl);
+    align-items: center;
+    margin-bottom: var(--space-3xl);
+}
+
+.about-content h1 {
+    font-size: 3rem;
+    margin-bottom: var(--space-md);
+    color: var(--text-primary);
+}
+
+.about-subtitle {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    margin-bottom: var(--space-lg);
+}
+
+.about-intro {
+    font-size: 1.125rem;
+    line-height: 1.7;
+    color: var(--text-secondary);
+}
+
+.about-profile-image {
+    width: 100%;
+    max-width: 300px;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+}
+
+.about-section {
+    margin-bottom: var(--space-3xl);
+}
+
+.about-section h2 {
+    font-size: 2rem;
+    margin-bottom: var(--space-lg);
+    color: var(--text-primary);
+}
+
+.expertise-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--space-xl);
+}
+
+.expertise-item {
+    background: var(--bg-card);
+    padding: var(--space-lg);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.expertise-item h3 {
+    color: var(--primary-color);
+    margin-bottom: var(--space-sm);
+}
+
+.education-item {
+    background: var(--bg-secondary);
+    padding: var(--space-lg);
+    border-radius: var(--radius-md);
+}
+
+.contact-links {
+    display: flex;
+    gap: var(--space-lg);
+    flex-wrap: wrap;
+}
+
+.contact-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-md) var(--space-lg);
+    background: var(--primary-color);
+    color: var(--text-light);
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+}
+
+.contact-btn:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    color: var(--text-light);
+}
+
+@media (max-width: 768px) {
+    .about-hero {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    
+    .about-content h1 {
+        font-size: 2rem;
+    }
+    
+    .expertise-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .contact-links {
+        justify-content: center;
+    }
+}
+</style>
+{% endblock %}

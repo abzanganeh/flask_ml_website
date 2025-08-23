@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+
+{% block title %}{{ project.title }} - {{ site_title }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="back-to-projects">
+        <a href="{{ url_for('projects') }}">
+            <i class="fas fa-arrow-left"></i> Back to Projects
+        </a>
+    </div>
+</div>
+
+<!-- Project Header -->
+<header class="project-header">
+    <div class="container">
+        <div class="project-header-content">
+            <span class="project-category">{{ project.category }}</span>
+            
+            <h1>{{ project.title }}</h1>
+            <p class="project-excerpt">{{ project.description }}</p>
+            
+            <div class="project-actions">
+                {% if project.github_url %}
+                <a href="{{ project.github_url }}" target="_blank" class="btn btn-outline">
+                    <i class="fab fa-github"></i> View Code
+                </a>
+                {% endif %}
+                {% if project.demo_url %}
+                <a href="{{ project.demo_url }}" target="_blank" class="btn btn-primary">
+                    <i class="fas fa-external-link-alt"></i> Live Demo
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Project Content -->
+<article class="project-content-wrapper">
+    <div class="project-content">
+        <div class="project-image">
+            <img src="{{ project.image_url }}" alt="{{ project.title }}" loading="lazy">
+        </div>
+        
+        <div class="project-details">
+            <h2>Project Overview</h2>
+            <p>{{ project.description }}</p>
+            
+            <h3>Technology Stack</h3>
+            <div class="tech-stack">
+                {% for tech in project.technology_stack %}
+                <span class="tech-badge">{{ tech }}</span>
+                {% endfor %}
+            </div>
+            
+            <h3>Key Features</h3>
+            <ul>
+                <li>Advanced machine learning implementation</li>
+                <li>Scalable and efficient architecture</li>
+                <li>User-friendly interface</li>
+                <li>Comprehensive testing and validation</li>
+            </ul>
+        </div>
+    </div>
+</article>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.back-to-projects {
+    text-align: center;
+    margin-bottom: var(--space-2xl);
+}
+
+.back-to-projects a {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: gap var(--transition-fast);
+}
+
+.back-to-projects a:hover {
+    gap: var(--space-md);
+}
+
+.project-header {
+    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+    padding: var(--space-3xl) 0 var(--space-2xl);
+    text-align: center;
+}
+
+.project-header-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.project-category {
+    background-color: var(--primary-color);
+    color: var(--text-light);
+    padding: var(--space-xs) var(--space-md);
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: var(--space-lg);
+    display: inline-block;
+}
+
+.project-header h1 {
+    font-size: 2.5rem;
+    line-height: 1.2;
+    margin-bottom: var(--space-lg);
+    color: var(--text-primary);
+}
+
+.project-excerpt {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: var(--space-2xl);
+}
+
+.project-actions {
+    display: flex;
+    gap: var(--space-lg);
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.project-content-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: var(--space-3xl) var(--space-lg);
+}
+
+.project-image {
+    margin-bottom: var(--space-2xl);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+}
+
+.project-image img {
+    width: 100%;
+    height: auto;
+}
+
+.tech-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-xl);
+}
+
+.tech-badge {
+    background: var(--primary-color);
+    color: var(--text-light);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .project-header h1 {
+        font-size: 2rem;
+    }
+    
+    .project-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .project-content-wrapper {
+        padding: var(--space-2xl) var(--space-md);
+    }
+}
+</style>
+{% endblock %}
